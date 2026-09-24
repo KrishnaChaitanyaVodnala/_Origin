@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>80-Day DSA Roadmap</title>
+<title>80-Day DSA Roadmap — EchoVision</title>
+<meta name="description" content="Track your 80-day DSA study roadmap progress — Graphs, DP, Trie, Strings, and Integration. Real-time progress tracking with persistent storage.">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -11,11 +12,16 @@
     --bg:#10141C;
     --panel:#171C26;
     --panel-2:#1D2330;
+    --panel-3:#232938;
     --grid-line:rgba(255,255,255,0.045);
     --text:#E7EAF1;
     --text-dim:#8B93A7;
     --text-faint:#5B6376;
     --border:#2A3140;
+    --border-light:#3A4558;
+    --success:#48BB78;
+    --warning:#ECC94B;
+    --danger:#FC8181;
 
     --c-graphs:#4FD1C5;
     --c-graphs-dim:#4FD1C526;
@@ -58,6 +64,18 @@
     border-bottom:1px solid var(--border);
     margin-bottom:8px;
   }
+  .header-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+  }
+  .header-actions{
+    display:flex;
+    gap:8px;
+    flex-shrink:0;
+    padding-top:4px;
+  }
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
     font-size:12.5px;
@@ -83,6 +101,36 @@
     margin:0 0 28px;
   }
 
+  /* ===== BUTTONS ===== */
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.04em;
+    padding:7px 14px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--panel);
+    color:var(--text-dim);
+    cursor:pointer;
+    transition:all .2s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{
+    border-color:var(--border-light);
+    background:var(--panel-2);
+    color:var(--text);
+  }
+  .btn-danger:hover{
+    border-color:var(--danger);
+    color:var(--danger);
+    background:rgba(252,129,129,0.08);
+  }
+  .btn-export:hover{
+    border-color:var(--c-graphs);
+    color:var(--c-graphs);
+    background:rgba(79,209,197,0.08);
+  }
+
   /* progress */
   .progress-row{display:flex; align-items:center; gap:16px; margin-bottom:6px;}
   .progress-track{
@@ -97,15 +145,131 @@
     height:100%;
     width:0%;
     background:linear-gradient(90deg, var(--c-graphs), var(--c-dp), var(--c-trie), var(--c-strings), var(--c-integ));
-    transition:width .4s ease;
+    transition:width .6s cubic-bezier(0.22, 1, 0.36, 1);
+    border-radius:4px;
   }
   .progress-label{
     font-family:'JetBrains Mono', monospace;
     font-size:13px;
     color:var(--text-dim);
     white-space:nowrap;
-    min-width:92px;
+    min-width:120px;
     text-align:right;
+  }
+
+  /* ===== STATS DASHBOARD ===== */
+  .dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+    gap:12px;
+    margin:24px 0 8px;
+    animation:fadeSlideIn 0.5s ease-out;
+  }
+  @keyframes fadeSlideIn{
+    from{opacity:0; transform:translateY(12px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .stat-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px;
+    text-align:center;
+    transition:border-color .2s ease, transform .15s ease;
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-card::before{
+    content:'';
+    position:absolute;
+    top:0;left:0;right:0;
+    height:2px;
+    background:var(--stat-accent, var(--border));
+    opacity:0.6;
+    transition:opacity .2s ease;
+  }
+  .stat-card:hover{
+    border-color:var(--border-light);
+    transform:translateY(-2px);
+  }
+  .stat-card:hover::before{opacity:1;}
+  .stat-value{
+    font-family:'JetBrains Mono', monospace;
+    font-size:28px;
+    font-weight:700;
+    line-height:1;
+    margin-bottom:6px;
+    background:linear-gradient(135deg, var(--stat-accent, var(--c-graphs)), var(--text));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .stat-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+  }
+  .stat-sub{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    color:var(--text-faint);
+    margin-top:6px;
+    opacity:0.7;
+  }
+
+  /* ===== PHASE BREAKDOWN (inside dashboard area) ===== */
+  .phase-breakdown{
+    margin:12px 0 0;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:18px 20px;
+  }
+  .phase-breakdown-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    margin-bottom:14px;
+  }
+  .phase-bar-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .phase-bar-row:last-child{margin-bottom:0;}
+  .phase-bar-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    color:var(--text-dim);
+    width:70px;
+    flex-shrink:0;
+  }
+  .phase-bar-track{
+    flex:1;
+    height:6px;
+    background:var(--panel-2);
+    border-radius:3px;
+    overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .phase-bar-fill{
+    height:100%;
+    width:0%;
+    border-radius:3px;
+    transition:width .6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .phase-bar-count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color:var(--text-faint);
+    width:42px;
+    text-align:right;
+    flex-shrink:0;
   }
 
   /* ===== GRAPH NAV (signature element) ===== */
@@ -130,6 +294,11 @@
     font-size:10px;
   }
   .gedge{stroke:var(--border); stroke-width:2;}
+  .progress-ring{
+    transition:stroke-dashoffset .8s cubic-bezier(0.22, 1, 0.36, 1);
+    transform:rotate(-90deg);
+    transform-origin:center;
+  }
 
   /* ===== PHASE SECTIONS ===== */
   .phase{
@@ -157,6 +326,12 @@
     font-size:21px;
     font-weight:700;
   }
+  .phase-pct{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--phase-color);
+    opacity:0.8;
+  }
   .phase-meta{
     margin-left:auto;
     font-family:'JetBrains Mono', monospace;
@@ -176,6 +351,7 @@
     border-radius:10px;
     margin-bottom:10px;
     overflow:hidden;
+    transition:border-color .2s ease;
   }
   details.week[open]{border-color:var(--phase-color-mid, var(--border));}
   details.week summary{
@@ -199,11 +375,46 @@
     width:10px;
   }
   details.week[open] summary::before{transform:rotate(90deg);}
+
+  /* Week status badges */
+  .week-badge{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    padding:2px 8px;
+    border-radius:4px;
+    font-weight:600;
+  }
+  .week-badge.not-started{
+    background:rgba(91,99,118,0.15);
+    color:var(--text-faint);
+    border:1px solid rgba(91,99,118,0.3);
+  }
+  .week-badge.in-progress{
+    background:rgba(236,201,75,0.1);
+    color:var(--warning);
+    border:1px solid rgba(236,201,75,0.3);
+    animation:pulse-badge 2s ease-in-out infinite;
+  }
+  @keyframes pulse-badge{
+    0%,100%{opacity:1;}
+    50%{opacity:0.6;}
+  }
+  .week-badge.complete{
+    background:rgba(72,187,120,0.1);
+    color:var(--success);
+    border:1px solid rgba(72,187,120,0.3);
+  }
+
   .week-progress{
     margin-left:auto;
     font-size:11.5px;
     color:var(--text-faint);
     font-weight:400;
+    display:flex;
+    align-items:center;
+    gap:8px;
   }
 
   .day-row{
@@ -214,6 +425,7 @@
     padding:11px 18px;
     border-top:1px solid var(--border);
     font-size:13.5px;
+    transition:background .15s ease;
   }
   .day-row:hover{background:var(--panel-2);}
   .day-row.done{opacity:0.45;}
@@ -229,8 +441,12 @@
     position:relative;
     background:transparent;
     flex-shrink:0;
+    transition:background .15s ease, box-shadow .15s ease;
   }
-  .chk:checked{background:var(--phase-color);}
+  .chk:checked{
+    background:var(--phase-color);
+    box-shadow:0 0 8px rgba(79,209,197,0.2);
+  }
   .chk:checked::after{
     content:"";
     position:absolute;
@@ -279,74 +495,254 @@
   .resources ul{margin:0; padding-left:20px; color:var(--text-dim); font-size:14px; line-height:1.9;}
   .resources strong{color:var(--text);}
 
+  /* ===== DB STATUS / FOOTER ===== */
+  .db-status{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-top:40px;
+    padding:12px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--text-faint);
+  }
+  .db-dot{
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--success);
+    animation:pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot{
+    0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(72,187,120,0.4);}
+    50%{opacity:0.7;box-shadow:0 0 0 4px rgba(72,187,120,0);}
+  }
+
   footer{
     text-align:center;
     color:var(--text-faint);
     font-family:'JetBrains Mono', monospace;
     font-size:11.5px;
-    margin-top:50px;
+    margin-top:16px;
   }
+
+  /* ===== CONFIRM MODAL ===== */
+  .modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(16,20,28,0.85);
+    backdrop-filter:blur(4px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .modal-overlay.active{opacity:1; pointer-events:all;}
+  .modal-box{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:28px 32px;
+    max-width:380px;
+    width:90%;
+    text-align:center;
+    transform:scale(0.95);
+    transition:transform .2s ease;
+  }
+  .modal-overlay.active .modal-box{transform:scale(1);}
+  .modal-box h3{
+    font-family:'JetBrains Mono', monospace;
+    font-size:16px;
+    margin:0 0 10px;
+    color:var(--danger);
+  }
+  .modal-box p{
+    color:var(--text-dim);
+    font-size:13.5px;
+    margin:0 0 20px;
+    line-height:1.5;
+  }
+  .modal-btns{display:flex; gap:10px; justify-content:center;}
+  .modal-btns .btn{padding:8px 20px; font-size:12px;}
+  .btn-confirm-danger{
+    border-color:var(--danger) !important;
+    color:var(--danger) !important;
+  }
+  .btn-confirm-danger:hover{
+    background:rgba(252,129,129,0.15) !important;
+  }
+
+  /* ===== TOAST ===== */
+  .toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--panel-3);
+    border:1px solid var(--border-light);
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    padding:10px 20px;
+    border-radius:8px;
+    z-index:1001;
+    opacity:0;
+    pointer-events:none;
+    transition:all .3s ease;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0); pointer-events:all;}
 
   @media (max-width:640px){
     .day-row, .day-head-row{grid-template-columns:26px 56px 1fr; }
     .day-row .task, .day-head-row .task-h{display:none;}
     header{padding:40px 0 24px;}
+    .dashboard{grid-template-columns:repeat(2, 1fr);}
+    .header-top{flex-direction:column;}
+    .header-actions{align-self:flex-start;}
+    .phase-head{flex-wrap:wrap;}
   }
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
-    *{transition:none !important;}
+    *{transition:none !important; animation:none !important;}
   }
 </style>
 </head>
 <body>
 
+<!-- Confirm Reset Modal -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal-box">
+    <h3>⚠ Reset All Progress?</h3>
+    <p>This will clear all checked days and reset your streak. This action cannot be undone.</p>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeResetModal()">Cancel</button>
+      <button class="btn btn-confirm-danger" onclick="confirmReset()">Reset Everything</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
 <div class="wrap">
   <header>
-    <div class="eyebrow">// study_plan.init(pace = "1hr/day", duration = "16 weeks")</div>
-    <h1>The 80-Day <span>DSA</span> Roadmap</h1>
+    <div class="header-top">
+      <div>
+        <div class="eyebrow">// study_plan.init(pace = "1hr/day", duration = "16 weeks")</div>
+        <h1>The 80-Day <span>DSA</span> Roadmap</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-export" onclick="exportProgress()" title="Export progress as JSON">↓ Export</button>
+        <button class="btn" onclick="importProgress()" title="Import progress from JSON">↑ Import</button>
+        <button class="btn btn-danger" onclick="openResetModal()" title="Reset all progress">✕ Reset</button>
+      </div>
+    </div>
     <p>Graphs, Dynamic Programming, Trie, and Advanced String Algorithms — one focused hour a day, five days a week. Each node below is a phase; check off sessions as you complete them.</p>
     <div class="progress-row">
       <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-label" id="progressLabel">0 / 80 days</div>
+      <div class="progress-label" id="progressLabel">0 / 80 days · 0%</div>
     </div>
   </header>
 
+  <!-- ===== STATS DASHBOARD ===== -->
+  <div class="dashboard" id="dashboard">
+    <div class="stat-card" style="--stat-accent:var(--c-graphs)">
+      <div class="stat-value" id="statDone">0</div>
+      <div class="stat-label">Days Done</div>
+    </div>
+    <div class="stat-card" style="--stat-accent:var(--c-dp)">
+      <div class="stat-value" id="statRemaining">80</div>
+      <div class="stat-label">Remaining</div>
+    </div>
+    <div class="stat-card" style="--stat-accent:var(--c-trie)">
+      <div class="stat-value" id="statPct">0%</div>
+      <div class="stat-label">Complete</div>
+    </div>
+    <div class="stat-card" style="--stat-accent:var(--c-strings)">
+      <div class="stat-value" id="statStreak">0</div>
+      <div class="stat-label">Day Streak</div>
+      <div class="stat-sub" id="statStreakSub">consecutive days checked</div>
+    </div>
+    <div class="stat-card" style="--stat-accent:var(--c-integ)">
+      <div class="stat-value" id="statPhase" style="font-size:18px;">—</div>
+      <div class="stat-label">Current Phase</div>
+      <div class="stat-sub" id="statPhaseSub"></div>
+    </div>
+    <div class="stat-card" style="--stat-accent:var(--c-graphs)">
+      <div class="stat-value" id="statLastActive" style="font-size:14px;">Never</div>
+      <div class="stat-label">Last Activity</div>
+    </div>
+  </div>
+
+  <!-- Phase breakdown bars -->
+  <div class="phase-breakdown" id="phaseBreakdown">
+    <div class="phase-breakdown-title">// phase_progress</div>
+  </div>
+
   <nav class="graphnav" aria-label="Phase navigator">
-    <svg viewBox="0 0 900 130" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 900 140" xmlns="http://www.w3.org/2000/svg">
       <line class="gedge" x1="80" y1="55" x2="240" y2="55"/>
       <line class="gedge" x1="240" y1="55" x2="400" y2="55"/>
       <line class="gedge" x1="400" y1="55" x2="560" y2="55"/>
       <line class="gedge" x1="560" y1="55" x2="740" y2="55"/>
 
+      <!-- Phase nodes with progress rings -->
       <a href="#phase-graphs"><g class="gnode">
-        <circle cx="80" cy="55" r="26" fill="var(--c-graphs-dim)" stroke="var(--c-graphs)" stroke-width="2"/>
+        <circle cx="80" cy="55" r="30" fill="none" stroke="var(--panel-2)" stroke-width="3"/>
+        <circle cx="80" cy="55" r="30" fill="none" stroke="var(--c-graphs)" stroke-width="3" class="progress-ring" id="ring-graphs"
+          stroke-dasharray="188.5" stroke-dashoffset="188.5" stroke-linecap="round"/>
+        <circle cx="80" cy="55" r="24" fill="var(--c-graphs-dim)" stroke="var(--c-graphs)" stroke-width="1.5"/>
         <text x="80" y="60" text-anchor="middle" font-size="12">GR</text>
-        <text x="80" y="102" text-anchor="middle" class="sub">Graphs · w1–4</text>
+        <text x="80" y="108" text-anchor="middle" class="sub">Graphs · w1–4</text>
+        <text x="80" y="120" text-anchor="middle" class="sub" id="ring-graphs-pct" style="fill:var(--c-graphs);font-weight:600">0%</text>
       </g></a>
 
       <a href="#phase-dp"><g class="gnode">
-        <circle cx="240" cy="55" r="26" fill="var(--c-dp-dim)" stroke="var(--c-dp)" stroke-width="2"/>
+        <circle cx="240" cy="55" r="30" fill="none" stroke="var(--panel-2)" stroke-width="3"/>
+        <circle cx="240" cy="55" r="30" fill="none" stroke="var(--c-dp)" stroke-width="3" class="progress-ring" id="ring-dp"
+          stroke-dasharray="188.5" stroke-dashoffset="188.5" stroke-linecap="round"/>
+        <circle cx="240" cy="55" r="24" fill="var(--c-dp-dim)" stroke="var(--c-dp)" stroke-width="1.5"/>
         <text x="240" y="60" text-anchor="middle" font-size="12">DP</text>
-        <text x="240" y="102" text-anchor="middle" class="sub">Dynamic Prog · w5–8</text>
+        <text x="240" y="108" text-anchor="middle" class="sub">Dynamic Prog · w5–8</text>
+        <text x="240" y="120" text-anchor="middle" class="sub" id="ring-dp-pct" style="fill:var(--c-dp);font-weight:600">0%</text>
       </g></a>
 
       <a href="#phase-trie"><g class="gnode">
-        <circle cx="400" cy="55" r="26" fill="var(--c-trie-dim)" stroke="var(--c-trie)" stroke-width="2"/>
+        <circle cx="400" cy="55" r="30" fill="none" stroke="var(--panel-2)" stroke-width="3"/>
+        <circle cx="400" cy="55" r="30" fill="none" stroke="var(--c-trie)" stroke-width="3" class="progress-ring" id="ring-trie"
+          stroke-dasharray="188.5" stroke-dashoffset="188.5" stroke-linecap="round"/>
+        <circle cx="400" cy="55" r="24" fill="var(--c-trie-dim)" stroke="var(--c-trie)" stroke-width="1.5"/>
         <text x="400" y="60" text-anchor="middle" font-size="12">TR</text>
-        <text x="400" y="102" text-anchor="middle" class="sub">Trie · w9</text>
+        <text x="400" y="108" text-anchor="middle" class="sub">Trie · w9</text>
+        <text x="400" y="120" text-anchor="middle" class="sub" id="ring-trie-pct" style="fill:var(--c-trie);font-weight:600">0%</text>
       </g></a>
 
       <a href="#phase-strings"><g class="gnode">
-        <circle cx="560" cy="55" r="26" fill="var(--c-strings-dim)" stroke="var(--c-strings)" stroke-width="2"/>
+        <circle cx="560" cy="55" r="30" fill="none" stroke="var(--panel-2)" stroke-width="3"/>
+        <circle cx="560" cy="55" r="30" fill="none" stroke="var(--c-strings)" stroke-width="3" class="progress-ring" id="ring-strings"
+          stroke-dasharray="188.5" stroke-dashoffset="188.5" stroke-linecap="round"/>
+        <circle cx="560" cy="55" r="24" fill="var(--c-strings-dim)" stroke="var(--c-strings)" stroke-width="1.5"/>
         <text x="560" y="60" text-anchor="middle" font-size="12">STR</text>
-        <text x="560" y="102" text-anchor="middle" class="sub">Strings · w10–13</text>
+        <text x="560" y="108" text-anchor="middle" class="sub">Strings · w10–13</text>
+        <text x="560" y="120" text-anchor="middle" class="sub" id="ring-strings-pct" style="fill:var(--c-strings);font-weight:600">0%</text>
       </g></a>
 
       <a href="#phase-integ"><g class="gnode">
-        <circle cx="740" cy="55" r="26" fill="var(--c-integ-dim)" stroke="var(--c-integ)" stroke-width="2"/>
+        <circle cx="740" cy="55" r="30" fill="none" stroke="var(--panel-2)" stroke-width="3"/>
+        <circle cx="740" cy="55" r="30" fill="none" stroke="var(--c-integ)" stroke-width="3" class="progress-ring" id="ring-integ"
+          stroke-dasharray="188.5" stroke-dashoffset="188.5" stroke-linecap="round"/>
+        <circle cx="740" cy="55" r="24" fill="var(--c-integ-dim)" stroke="var(--c-integ)" stroke-width="1.5"/>
         <text x="740" y="60" text-anchor="middle" font-size="12">INT</text>
-        <text x="740" y="102" text-anchor="middle" class="sub">Integration · w14–16</text>
+        <text x="740" y="108" text-anchor="middle" class="sub">Integration · w14–16</text>
+        <text x="740" y="120" text-anchor="middle" class="sub" id="ring-integ-pct" style="fill:var(--c-integ);font-weight:600">0%</text>
       </g></a>
     </svg>
   </nav>
@@ -363,10 +759,21 @@
     </ul>
   </div>
 
-  <footer>progress is stored in this page only — it resets on reload</footer>
+  <!-- DB Status indicator -->
+  <div class="db-status">
+    <span class="db-dot"></span>
+    <span>localStorage database active — progress auto-saved on every change</span>
+    <span style="margin-left:8px;color:var(--text-faint);" id="dbSize"></span>
+  </div>
+
+  <footer>EchoVision DSA Tracker · progress persists across sessions via localStorage</footer>
 </div>
 
+<!-- Hidden file input for import -->
+<input type="file" id="fileImport" accept=".json" style="display:none" onchange="handleImport(event)">
+
 <script>
+// ===== PLAN DATA (unchanged) =====
 const PHASES = [
   {
     id:"graphs", color:"var(--c-graphs)", num:"01", title:"Graphs",
@@ -517,6 +924,55 @@ const PHASES = [
   },
 ];
 
+// ===== LOCAL STORAGE DATABASE =====
+const DB_KEY = 'echovision_dsa_progress';
+const DB_META_KEY = 'echovision_dsa_meta';
+
+function loadDB() {
+  try {
+    const raw = localStorage.getItem(DB_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) {
+    console.warn('[DB] Failed to load:', e);
+    return {};
+  }
+}
+
+function saveDB(data) {
+  try {
+    localStorage.setItem(DB_KEY, JSON.stringify(data));
+    updateDBSize();
+  } catch(e) {
+    console.error('[DB] Failed to save:', e);
+    showToast('⚠ Storage error — progress may not persist');
+  }
+}
+
+function loadMeta() {
+  try {
+    const raw = localStorage.getItem(DB_META_KEY);
+    return raw ? JSON.parse(raw) : { lastActivity: null, streak: 0, streakDays: [] };
+  } catch(e) {
+    return { lastActivity: null, streak: 0, streakDays: [] };
+  }
+}
+
+function saveMeta(meta) {
+  try {
+    localStorage.setItem(DB_META_KEY, JSON.stringify(meta));
+  } catch(e) {
+    console.error('[DB] Failed to save meta:', e);
+  }
+}
+
+function updateDBSize() {
+  const el = document.getElementById('dbSize');
+  if (!el) return;
+  const total = (localStorage.getItem(DB_KEY) || '').length + (localStorage.getItem(DB_META_KEY) || '').length;
+  el.textContent = `(${(total / 1024).toFixed(1)} KB used)`;
+}
+
+// ===== BUILD THE DOM =====
 const container = document.getElementById('phases');
 
 PHASES.forEach((phase, pi) => {
@@ -539,7 +995,7 @@ PHASES.forEach((phase, pi) => {
     });
     weeksHTML += `
       <details class="week" ${wi===0 ? 'open' : ''}>
-        <summary>${week.label}<span class="week-progress" data-weekprog>0/${week.days.length}</span></summary>
+        <summary>${week.label}<span class="week-progress" data-weekprog><span class="week-badge not-started">Not Started</span> 0/${week.days.length}</span></summary>
         <div class="day-head-row">
           <span></span><span>Day</span><span>Topic</span><span class="task-h">Task</span>
         </div>
@@ -551,6 +1007,7 @@ PHASES.forEach((phase, pi) => {
     <div class="phase-head">
       <span class="phase-num">${phase.num}</span>
       <span class="phase-title">${phase.title}</span>
+      <span class="phase-pct" id="phase-pct-${phase.id}">0%</span>
       <span class="phase-meta">${phase.meta}</span>
     </div>
     <p class="phase-note">${phase.note}</p>
@@ -559,32 +1016,281 @@ PHASES.forEach((phase, pi) => {
   container.appendChild(section);
 });
 
-// ---- interactivity: checkbox state, progress bar, per-week counters ----
-const allBoxes = () => Array.from(document.querySelectorAll('.chk'));
-const totalDays = allBoxes().length;
-
-function updateProgress(){
-  const done = allBoxes().filter(b => b.checked).length;
-  const pct = totalDays ? Math.round((done/totalDays)*100) : 0;
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = `${done} / ${totalDays} days`;
-
-  document.querySelectorAll('details.week').forEach(week => {
-    const boxes = Array.from(week.querySelectorAll('.chk'));
-    const doneCount = boxes.filter(b => b.checked).length;
-    const label = week.querySelector('[data-weekprog]');
-    if(label) label.textContent = `${doneCount}/${boxes.length}`;
-  });
-}
-
-document.addEventListener('change', (e) => {
-  if(!e.target.classList.contains('chk')) return;
-  const row = e.target.closest('.day-row');
-  row.classList.toggle('done', e.target.checked);
-  updateProgress();
+// ===== BUILD PHASE BREAKDOWN BARS =====
+const breakdownContainer = document.getElementById('phaseBreakdown');
+const phaseColors = { graphs:'var(--c-graphs)', dp:'var(--c-dp)', trie:'var(--c-trie)', strings:'var(--c-strings)', integ:'var(--c-integ)' };
+PHASES.forEach(phase => {
+  const totalInPhase = phase.weeks.reduce((s,w)=>s+w.days.length, 0);
+  const row = document.createElement('div');
+  row.className = 'phase-bar-row';
+  row.innerHTML = `
+    <span class="phase-bar-label">${phase.title}</span>
+    <div class="phase-bar-track"><div class="phase-bar-fill" id="pbar-${phase.id}" style="background:${phaseColors[phase.id]}"></div></div>
+    <span class="phase-bar-count" id="pcount-${phase.id}">0/${totalInPhase}</span>
+  `;
+  breakdownContainer.appendChild(row);
 });
 
+// ===== RESTORE STATE FROM DB =====
+const db = loadDB();
+const allBoxes = () => Array.from(document.querySelectorAll('.chk'));
+const totalDays = 80;
+
+allBoxes().forEach(box => {
+  const day = box.dataset.day;
+  if (db[day]) {
+    box.checked = true;
+    const row = box.closest('.day-row');
+    if (row) row.classList.add('done');
+  }
+});
+
+// ===== PROGRESS UPDATE ENGINE =====
+function getPhaseStats() {
+  const stats = {};
+  PHASES.forEach(phase => {
+    const section = document.getElementById('phase-' + phase.id);
+    if (!section) return;
+    const boxes = Array.from(section.querySelectorAll('.chk'));
+    const done = boxes.filter(b => b.checked).length;
+    stats[phase.id] = { done, total: boxes.length, pct: boxes.length ? Math.round((done/boxes.length)*100) : 0 };
+  });
+  return stats;
+}
+
+function computeStreak() {
+  const checked = allBoxes().filter(b => b.checked).map(b => parseInt(b.dataset.day)).sort((a,b) => a-b);
+  if (checked.length === 0) return 0;
+  // Find longest consecutive streak from the start
+  let streak = 1;
+  for (let i = 1; i < checked.length; i++) {
+    if (checked[i] === checked[i-1] + 1) streak++;
+    else break;
+  }
+  return streak;
+}
+
+function getCurrentPhase() {
+  const stats = getPhaseStats();
+  for (const phase of PHASES) {
+    const s = stats[phase.id];
+    if (s && s.done < s.total) return phase;
+  }
+  return PHASES[PHASES.length - 1];
+}
+
+function updateProgress() {
+  const boxes = allBoxes();
+  const done = boxes.filter(b => b.checked).length;
+  const pct = totalDays ? Math.round((done/totalDays)*100) : 0;
+
+  // Main progress bar
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `${done} / ${totalDays} days · ${pct}%`;
+
+  // Per-week counters & badges
+  document.querySelectorAll('details.week').forEach(week => {
+    const wBoxes = Array.from(week.querySelectorAll('.chk'));
+    const doneCount = wBoxes.filter(b => b.checked).length;
+    const label = week.querySelector('[data-weekprog]');
+    if (label) {
+      let badgeClass, badgeText;
+      if (doneCount === 0) { badgeClass = 'not-started'; badgeText = 'Not Started'; }
+      else if (doneCount === wBoxes.length) { badgeClass = 'complete'; badgeText = 'Complete'; }
+      else { badgeClass = 'in-progress'; badgeText = 'In Progress'; }
+      label.innerHTML = `<span class="week-badge ${badgeClass}">${badgeText}</span> ${doneCount}/${wBoxes.length}`;
+    }
+  });
+
+  // Phase stats
+  const phaseStats = getPhaseStats();
+  const CIRC = 188.5; // 2 * PI * 30
+  PHASES.forEach(phase => {
+    const s = phaseStats[phase.id];
+    if (!s) return;
+
+    // SVG progress ring
+    const ring = document.getElementById('ring-' + phase.id);
+    const pctLabel = document.getElementById('ring-' + phase.id + '-pct');
+    if (ring) {
+      const offset = CIRC - (CIRC * s.pct / 100);
+      ring.style.strokeDashoffset = offset;
+    }
+    if (pctLabel) pctLabel.textContent = s.pct + '%';
+
+    // Phase header percentage
+    const phPct = document.getElementById('phase-pct-' + phase.id);
+    if (phPct) phPct.textContent = s.pct + '%';
+
+    // Breakdown bars
+    const pbar = document.getElementById('pbar-' + phase.id);
+    const pcount = document.getElementById('pcount-' + phase.id);
+    if (pbar) pbar.style.width = s.pct + '%';
+    if (pcount) pcount.textContent = `${s.done}/${s.total}`;
+  });
+
+  // Dashboard stats
+  const streak = computeStreak();
+  const currentPhase = getCurrentPhase();
+  const meta = loadMeta();
+
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statRemaining').textContent = totalDays - done;
+  document.getElementById('statPct').textContent = pct + '%';
+  document.getElementById('statStreak').textContent = streak;
+  document.getElementById('statPhase').textContent = currentPhase ? currentPhase.title : 'Done!';
+  document.getElementById('statPhaseSub').textContent = currentPhase
+    ? `${phaseStats[currentPhase.id]?.done || 0}/${phaseStats[currentPhase.id]?.total || 0} done`
+    : 'All phases complete 🎉';
+
+  // Last activity
+  if (meta.lastActivity) {
+    const d = new Date(meta.lastActivity);
+    const now = new Date();
+    const diffMs = now - d;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHrs = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    let timeAgo;
+    if (diffMins < 1) timeAgo = 'Just now';
+    else if (diffMins < 60) timeAgo = `${diffMins}m ago`;
+    else if (diffHrs < 24) timeAgo = `${diffHrs}h ago`;
+    else if (diffDays < 7) timeAgo = `${diffDays}d ago`;
+    else timeAgo = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    document.getElementById('statLastActive').textContent = timeAgo;
+  } else {
+    document.getElementById('statLastActive').textContent = 'Never';
+  }
+}
+
+// ===== EVENT HANDLERS =====
+document.addEventListener('change', (e) => {
+  if (!e.target.classList.contains('chk')) return;
+  const row = e.target.closest('.day-row');
+  const day = e.target.dataset.day;
+  row.classList.toggle('done', e.target.checked);
+
+  // Persist to DB
+  const data = loadDB();
+  if (e.target.checked) {
+    data[day] = { checked: true, timestamp: new Date().toISOString() };
+  } else {
+    delete data[day];
+  }
+  saveDB(data);
+
+  // Update meta
+  const meta = loadMeta();
+  meta.lastActivity = new Date().toISOString();
+  saveMeta(meta);
+
+  updateProgress();
+
+  // Check for milestone toasts
+  const done = allBoxes().filter(b => b.checked).length;
+  if (done === totalDays) showToast('🎉 Congratulations! You completed all 80 days!');
+  else if (done % 10 === 0 && e.target.checked) showToast(`🔥 Milestone: ${done} days completed!`);
+});
+
+// ===== TOAST =====
+let toastTimeout;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ===== RESET MODAL =====
+function openResetModal() {
+  document.getElementById('resetModal').classList.add('active');
+}
+function closeResetModal() {
+  document.getElementById('resetModal').classList.remove('active');
+}
+function confirmReset() {
+  localStorage.removeItem(DB_KEY);
+  localStorage.removeItem(DB_META_KEY);
+  allBoxes().forEach(box => {
+    box.checked = false;
+    const row = box.closest('.day-row');
+    if (row) row.classList.remove('done');
+  });
+  closeResetModal();
+  updateProgress();
+  showToast('Progress has been reset');
+}
+
+// ===== EXPORT / IMPORT =====
+function exportProgress() {
+  const data = {
+    version: 1,
+    exportDate: new Date().toISOString(),
+    progress: loadDB(),
+    meta: loadMeta()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dsa-roadmap-progress-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('✓ Progress exported');
+}
+
+function importProgress() {
+  document.getElementById('fileImport').click();
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.progress) throw new Error('Invalid format');
+
+      saveDB(data.progress);
+      if (data.meta) saveMeta(data.meta);
+
+      // Restore checkboxes
+      allBoxes().forEach(box => {
+        const day = box.dataset.day;
+        const isChecked = !!data.progress[day];
+        box.checked = isChecked;
+        const row = box.closest('.day-row');
+        if (row) row.classList.toggle('done', isChecked);
+      });
+
+      updateProgress();
+      showToast('✓ Progress imported successfully');
+    } catch(err) {
+      showToast('⚠ Import failed — invalid file format');
+      console.error('[Import]', err);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // reset so same file can be re-imported
+}
+
+// ===== INIT =====
 updateProgress();
+updateDBSize();
+
+// Debug info in console
+console.log('%c[EchoVision DSA Tracker]', 'color:#4FD1C5;font-weight:bold;font-size:14px');
+console.log('%cDatabase:', 'color:#F6AD55;font-weight:bold', 'localStorage');
+console.log('%cKeys:', 'color:#B794F4;font-weight:bold', DB_KEY, DB_META_KEY);
+console.log('%cStored days:', 'color:#68D391;font-weight:bold', Object.keys(loadDB()).length);
+console.log('%cTo debug: copy/paste these in console:', 'color:#8B93A7');
+console.log('  loadDB()        — view all stored progress');
+console.log('  loadMeta()      — view metadata (streak, last activity)');
+console.log('  localStorage    — view raw storage');
 </script>
 
 </body>
