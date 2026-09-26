@@ -9,43 +9,6 @@
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
   :root{
-    --bg:#F7F8FA;
-    --panel:#FFFFFF;
-    --panel-2:#F1F3F6;
-    --text:#1F2430;
-    --text-dim:#5C6470;
-    --text-faint:#96A0AD;
-    --border:#E3E7ED;
-    --accent:#3E7CFF;
-    --accent-dim:#EAF0FF;
-    --success:#2E9E5B;
-    --success-dim:#E6F6ED;
-    --warning:#B8860B;
-    --warning-dim:#FBF3DE;
-    --danger:#D64545;
-    --danger-dim:#FCEAEA;
-  }
-
-  :root:not([data-theme="light"]) {
-    @media (prefers-color-scheme: dark) {
-      --bg:#14161C;
-      --panel:#1B1E27;
-      --panel-2:#232733;
-      --text:#EDEFF3;
-      --text-dim:#A2A9B5;
-      --text-faint:#6B7280;
-      --border:#2C3140;
-      --accent:#6C9CFF;
-      --accent-dim:#22283A;
-      --success:#4FBE82;
-      --success-dim:#1C2D22;
-      --warning:#E0B74F;
-      --warning-dim:#2E2818;
-      --danger:#F1786F;
-      --danger-dim:#301F1F;
-    }
-  }
-  :root[data-theme="dark"]{
     --bg:#14161C;
     --panel:#1B1E27;
     --panel-2:#232733;
@@ -796,7 +759,7 @@ const DB_META_KEY = 'echovision_dsa_meta';
 
 async function loadDB() {
   try {
-    const result = await window.storage.get(DB_KEY, false);
+    const result = await window.storage.get(DB_KEY, true);
     return result ? JSON.parse(result.value) : {};
   } catch(e) {
     return {};
@@ -805,7 +768,7 @@ async function loadDB() {
 
 async function saveDB(data) {
   try {
-    const result = await window.storage.set(DB_KEY, JSON.stringify(data), false);
+    const result = await window.storage.set(DB_KEY, JSON.stringify(data), true);
     if (!result) throw new Error('save returned null');
     return true;
   } catch(e) {
@@ -817,7 +780,7 @@ async function saveDB(data) {
 
 async function loadMeta() {
   try {
-    const result = await window.storage.get(DB_META_KEY, false);
+    const result = await window.storage.get(DB_META_KEY, true);
     return result ? JSON.parse(result.value) : { lastActivity: null };
   } catch(e) {
     return { lastActivity: null };
@@ -826,7 +789,7 @@ async function loadMeta() {
 
 async function saveMeta(meta) {
   try {
-    await window.storage.set(DB_META_KEY, JSON.stringify(meta), false);
+    await window.storage.set(DB_META_KEY, JSON.stringify(meta), true);
   } catch(e) {
     console.error('[DB] Failed to save meta:', e);
   }
@@ -1042,8 +1005,8 @@ function closeResetModal() {
 }
 async function confirmReset() {
   try {
-    await window.storage.delete(DB_KEY, false);
-    await window.storage.delete(DB_META_KEY, false);
+    await window.storage.delete(DB_KEY, true);
+    await window.storage.delete(DB_META_KEY, true);
   } catch(e) {
     console.error('[DB] Failed to clear:', e);
   }
