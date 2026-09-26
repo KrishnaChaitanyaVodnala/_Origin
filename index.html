@@ -753,14 +753,14 @@ const PHASES = [
   },
 ];
 
-// ===== PERSISTENT STORAGE (artifact storage API, replaces localStorage) =====
+// ===== PERSISTENT STORAGE (browser localStorage) =====
 const DB_KEY = 'echovision_dsa_progress';
 const DB_META_KEY = 'echovision_dsa_meta';
 
 async function loadDB() {
   try {
-    const result = await window.storage.get(DB_KEY, true);
-    return result ? JSON.parse(result.value) : {};
+    const raw = localStorage.getItem(DB_KEY);
+    return raw ? JSON.parse(raw) : {};
   } catch(e) {
     return {};
   }
@@ -768,8 +768,7 @@ async function loadDB() {
 
 async function saveDB(data) {
   try {
-    const result = await window.storage.set(DB_KEY, JSON.stringify(data), true);
-    if (!result) throw new Error('save returned null');
+    localStorage.setItem(DB_KEY, JSON.stringify(data));
     return true;
   } catch(e) {
     console.error('[DB] Failed to save:', e);
@@ -780,8 +779,8 @@ async function saveDB(data) {
 
 async function loadMeta() {
   try {
-    const result = await window.storage.get(DB_META_KEY, true);
-    return result ? JSON.parse(result.value) : { lastActivity: null };
+    const raw = localStorage.getItem(DB_META_KEY);
+    return raw ? JSON.parse(raw) : { lastActivity: null };
   } catch(e) {
     return { lastActivity: null };
   }
@@ -789,7 +788,7 @@ async function loadMeta() {
 
 async function saveMeta(meta) {
   try {
-    await window.storage.set(DB_META_KEY, JSON.stringify(meta), true);
+    localStorage.setItem(DB_META_KEY, JSON.stringify(meta));
   } catch(e) {
     console.error('[DB] Failed to save meta:', e);
   }
@@ -1005,8 +1004,8 @@ function closeResetModal() {
 }
 async function confirmReset() {
   try {
-    await window.storage.delete(DB_KEY, true);
-    await window.storage.delete(DB_META_KEY, true);
+    localStorage.removeItem(DB_KEY);
+    localStorage.removeItem(DB_META_KEY);
   } catch(e) {
     console.error('[DB] Failed to clear:', e);
   }
